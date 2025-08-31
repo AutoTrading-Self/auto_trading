@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+ccxt
+redis
+python-multipart
+pydantic
+requests

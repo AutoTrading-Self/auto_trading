@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # 백엔드 서비스 (FastAPI)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: trading_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/app:/app
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    networks:
+      - trading_network
+
+  # 퀀트 트레이딩 서비스
+  trading_quant:
+    build:
+      context: ./trading_quant
+      dockerfile: Dockerfile
+    container_name: trading_quant
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./trading_quant/app:/app
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    networks:
+      - trading_network
+
+  # Redis (캐시 및 메시지 브로커)
+  redis:
+    image: redis:7-alpine
+    container_name: trading_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/data:/data
+    networks:
+      - trading_network
+
+networks:
+  trading_network:
+    driver: bridge

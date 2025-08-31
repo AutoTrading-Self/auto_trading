@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+ccxt
+redis
+pandas
+numpy
+requests
